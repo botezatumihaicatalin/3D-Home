@@ -33,6 +33,21 @@ namespace Home3d
             Y -= other.Y;
             Z -= other.Z;
         }
+
+        public void Multiply(double scalar)
+        {
+            X *= scalar;
+            Y *= scalar;
+            Z *= scalar;
+        }
+
+        public void Divide(double scalar)
+        {
+            X /= scalar;
+            Y /= scalar;
+            Z /= scalar;
+        }
+
         public Vertex3 Normalize()
         {
             var length = Length();

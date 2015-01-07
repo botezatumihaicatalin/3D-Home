@@ -12,6 +12,9 @@ namespace Home3d
         private static readonly ObjModel SonyTvModel = new ObjModel();
         private static readonly ObjModel TvTableModel = new ObjModel();
         private static readonly ObjModel DoorModel = new ObjModel();
+        private static readonly ObjModel LampModel = new ObjModel();
+        private static readonly ObjModel PaintingModel = new ObjModel();
+        private static readonly ObjModel PianoModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
         private static int lastX = -1, lastY = -1;
 
@@ -33,6 +36,12 @@ namespace Home3d
             Console.WriteLine("{0} loaded with result : {1}", "cofeeTable.obj", result);
             result = DoorModel.Load("3dmodels/door.obj", "3dmodels/door.mtl");
             Console.WriteLine("{0} loaded with result : {1}", "door.obj", result);
+            result = LampModel.Load("3dmodels/lamp.obj", "3dmodels/lamp.mtl");
+            Console.WriteLine("{0} loaded with result : {1}", "lamp.obj", result);
+            result = PaintingModel.Load("3dmodels/painting.obj", "3dmodels/painting.mtl");
+            Console.WriteLine("{0} loaded with result : {1}", "painting.obj", result);
+            result = PianoModel.Load("3dmodels/piano.obj", "3dmodels/piano.mtl");
+            Console.WriteLine("{0} loaded with result : {1}", "piano.obj", result);
 
             Camera.EyePoint = new Vertex3(0, 4, 0);
             Camera.LookingPoint = new Vertex3(0, 4, -50);
@@ -55,8 +64,21 @@ namespace Home3d
             Glut.glutSolidCube(0.1);
             Gl.glPopMatrix();
 
+            var minVertex = new Vertex3(-12.0, 0.0, 0.0);
+            var maxVertex = new Vertex3(12.0, 10.0, -23.0);
+            var centerVertex = new Vertex3();
+            centerVertex.Add(minVertex);
+            centerVertex.Add(maxVertex);
+            centerVertex.Divide(2);
+
             Gl.glPushMatrix();
-                
+            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_AMBIENT, new[] { 1f, 1f, 1f });
+            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_DIFFUSE, new[] { 0.5f, 0.5f, 0.5f });
+            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, new[] { 0.5f, 0.5f, 0.5f });
+            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_SPECULAR, new[] { 0.5f, 0.5f, 0.5f });
+            Gl.glTranslated(centerVertex.X, centerVertex.Y, centerVertex.Z);
+            Gl.glScaled(maxVertex.X - minVertex.X, maxVertex.Y - minVertex.Y, maxVertex.Z - minVertex.Z);
+            Glut.glutSolidCube(1);
             Gl.glPopMatrix();
 
             Gl.glPushMatrix();
@@ -86,7 +108,7 @@ namespace Home3d
             Gl.glPopMatrix();
 
             Gl.glPushMatrix();
-            Gl.glTranslated(0, 1.5 * (TvTableModel.MaximumVertex.Y - TvTableModel.MinimumVertex.Y), -10);
+            Gl.glTranslated(0, 1.5 * (TvTableModel.MaximumVertex.Y - TvTableModel.MinimumVertex.Y), -5);
             Gl.glScaled(3, 3, 2);
 
             foreach (var obj in TvTableModel.Objects.Values)
@@ -96,7 +118,7 @@ namespace Home3d
             Gl.glPopMatrix();
 
             Gl.glPushMatrix();
-            Gl.glTranslated(0, 3 * (TvTableModel.MaximumVertex.Y - TvTableModel.MinimumVertex.Y) + (SonyTvModel.MaximumVertex.Y - SonyTvModel.MinimumVertex.Y) / 2.0, -10);
+            Gl.glTranslated(0, 3 * (TvTableModel.MaximumVertex.Y - TvTableModel.MinimumVertex.Y) + (SonyTvModel.MaximumVertex.Y - SonyTvModel.MinimumVertex.Y) / 2.0, -5);
             Gl.glRotated(90, 0, 1, 0);
 
             foreach (var obj in SonyTvModel.Objects.Values)
@@ -112,8 +134,48 @@ namespace Home3d
                 obj.Render();
             }
             Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glScaled(1, 2, 1);
+            Gl.glTranslated(-10, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -21);
+            foreach (var obj in LampModel.Objects.Values)
+            {
+                obj.Render();
+            }
+            Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glScaled(1, 2, 1);
+            Gl.glTranslated(10, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -21);
+            foreach (var obj in LampModel.Objects.Values)
+            {
+                obj.Render();
+            }
+            Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glTranslated(12, 0, -11);
+            Gl.glScaled(2, 1.8, 2);
+            Gl.glTranslated(-(PianoModel.MaximumVertex.X - PianoModel.MinimumVertex.X), (PianoModel.MaximumVertex.Y - PianoModel.MinimumVertex.Y) / 2.0, 0);
+            Gl.glRotated(180, 0, 1, 0);
+            foreach (var obj in PianoModel.Objects.Values)
+            {
+                obj.Render();
+            }
+            Gl.glPopMatrix();
+
+            Gl.glPushMatrix();
+            Gl.glTranslated(0, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -22);
+            Gl.glTranslated(0, (SofaModel.MaximumVertex.Y - SofaModel.MinimumVertex.Y), 0);
+            Gl.glTranslated(0, 2, 0);
+            Gl.glRotated(-90 , 0 , 1 , 0);
+            foreach (var obj in PaintingModel.Objects.Values)
+            {
+                obj.Render();
+            }
+            Gl.glPopMatrix();
+
             Glut.glutSwapBuffers();
-            //Glut.glutPostRedisplay();
         }
 
         static void OnReshape(int width, int height)

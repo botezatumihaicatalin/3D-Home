@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using Tao.OpenGl;
@@ -71,20 +70,17 @@ namespace Home3d.Model
             }
         }
 
-        public bool Load(string objModelPath, string objMaterialPath)
+        public bool LoadMaterial(string objMaterialPath)
         {
-            if (!File.Exists(objMaterialPath) || !File.Exists(objMaterialPath))
+            if (!File.Exists(objMaterialPath))
             {
                 return false;
             }
 
-            var objModelStreamReader = new StreamReader(objModelPath);
+            var objMaterialFolder = Path.GetDirectoryName(objMaterialPath) ?? string.Empty;
             var objMaterialStreamReader = new StreamReader(objMaterialPath);
-
-            string line;
-            var lastObjectMaterialRead = string.Empty;
-            var lastObjectNameRead = string.Empty;
             var lastMaterialNameRead = string.Empty;
+            var line = string.Empty;
 
             while ((line = objMaterialStreamReader.ReadLine()) != null)
             {
@@ -93,8 +89,8 @@ namespace Home3d.Model
                     continue;
                 }
 
-                var splittedLine = line.Split(' ');
-                var splittedLineSize = splittedLine.Length;
+                var splittedLine = new List<string>(line.Split(' '));
+                var splittedLineSize = splittedLine.Count;
 
                 if (splittedLineSize == 0)
                 {
@@ -127,7 +123,7 @@ namespace Home3d.Model
                         return false;
                     }
                     var material = Materials[lastMaterialNameRead];
-                    material.AmbientColor.Red = double.Parse(splittedLine[1],CultureInfo.InvariantCulture);
+                    material.AmbientColor.Red = double.Parse(splittedLine[1], CultureInfo.InvariantCulture);
                     material.AmbientColor.Green = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
                     material.AmbientColor.Blue = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
                     if (splittedLineSize >= 5)
@@ -205,6 +201,78 @@ namespace Home3d.Model
                     continue;
                 }
 
+                if (splittedLine[0] == "map_Ka" && splittedLineSize >= 2)
+                {
+                    if (!Materials.ContainsKey(lastMaterialNameRead))
+                    {
+                        return false;
+                    }
+                    var material = Materials[lastMaterialNameRead];
+                    if (splittedLine.Count == 6)
+                    {
+                        material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
+                        material.AmbientTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
+                        material.AmbientTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                    }
+                    else if (splittedLine.Count == 2)
+                    {
+                        material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    continue;
+                }
+
+                if (splittedLine[0] == "map_Kd" && splittedLineSize >= 2)
+                {
+                    if (!Materials.ContainsKey(lastMaterialNameRead))
+                    {
+                        return false;
+                    }
+                    var material = Materials[lastMaterialNameRead];
+                    if (splittedLine.Count == 6)
+                    {
+                        material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
+                        material.DiffuseTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
+                        material.DiffuseTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                    }
+                    else if (splittedLine.Count == 2)
+                    {
+                        material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    continue;
+                }
+
+                if (splittedLine[0] == "map_Ks" && splittedLineSize >= 2)
+                {
+                    if (!Materials.ContainsKey(lastMaterialNameRead))
+                    {
+                        return false;
+                    }
+                    var material = Materials[lastMaterialNameRead];
+                    if (splittedLine.Count == 6)
+                    {
+                        material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
+                        material.SpecularTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
+                        material.SpecularTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                    }
+                    else if (splittedLine.Count == 2)
+                    {
+                        material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    continue;
+                }
+
                 if (splittedLine[0] == "Ni")
                 {
                     continue;
@@ -212,6 +280,22 @@ namespace Home3d.Model
 
                 return false;
             }
+            return true;
+        }
+
+        public bool Load(string objModelPath)
+        {
+            if (!File.Exists(objModelPath))
+            {
+                return false;
+            }
+
+            var objModelFolder = Path.GetDirectoryName(objModelPath) ?? string.Empty;
+            var objModelStreamReader = new StreamReader(objModelPath);
+
+            string line;
+            var lastObjectMaterialRead = string.Empty;
+            var lastObjectNameRead = string.Empty;
 
             while ((line = objModelStreamReader.ReadLine()) != null)
             {
@@ -225,6 +309,15 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "#")
                 {
+                    continue;
+                }
+
+                if (splittedLine[0] == "mtllib" && splittedLineSize >= 2)
+                {
+                    if (!LoadMaterial(Path.Combine(objModelFolder, splittedLine[1])))
+                    {
+                        return false;
+                    }
                     continue;
                 }
 
@@ -323,6 +416,10 @@ namespace Home3d.Model
                     {
                         materialName += splittedLine[index];
                     }
+                    if (!Materials.ContainsKey(materialName))
+                    {
+                        return false;
+                    }
                     lastObjectMaterialRead = materialName;
                     continue;
                 }
@@ -338,18 +435,14 @@ namespace Home3d.Model
                     // TODO : maybe handle smoothness (not necesary)
                     continue;
                 }
-
-                if (splittedLine[0] == "mtllib")
-                {
-                    // No need to handle this, we can give the paths manually to the material
-                    // files.
-                    continue;
-                }
                 return false;
             }
 
             // Calulcate min vetexes and max vertexes
             CalculateMaxAndMinVertex();
+
+            Gl.glEnable(Gl.GL_NORMALIZE);
+            Gl.glEnable(Gl.GL_TEXTURE_2D);
 
             // Build the objects into GPU
             foreach (var modelObject in Objects.Values)
@@ -358,9 +451,9 @@ namespace Home3d.Model
                 Gl.glNewList(modelObject.ListId, Gl.GL_COMPILE);
                 foreach (var face in modelObject.Faces)
                 {
+                    var material = Materials[face.MaterialName];
                     if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial && Materials.ContainsKey(face.MaterialName)))
                     {
-                        var material = Materials[face.MaterialName];
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
@@ -368,12 +461,20 @@ namespace Home3d.Model
                     }
                     Gl.glShadeModel(Gl.GL_SMOOTH);
                     Gl.glBegin(Gl.GL_POLYGON);
+                    
+                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
+
                     foreach (var faceItem in face.FaceItems)
                     {
                         if (faceItem.NormalIndex != -1)
                         {
                             var normal = Normals[faceItem.NormalIndex];
                             Gl.glNormal3d(normal.X, normal.Y, normal.Z);
+                        }
+                        if (faceItem.TextureIndex != -1)
+                        {
+                            var texture = Textures[faceItem.TextureIndex];
+                            Gl.glTexCoord2d(texture.X * material.DiffuseTexture.ScaleU , texture.Y * material.DiffuseTexture.ScaleV);
                         }
                         var vertex = Vertices[faceItem.VertexIndex];
                         Gl.glVertex3d(vertex.X, vertex.Y, vertex.Z);
@@ -383,6 +484,9 @@ namespace Home3d.Model
                 }
                 Gl.glEndList();
             }
+
+            Gl.glDisable(Gl.GL_NORMALIZE);
+            Gl.glDisable(Gl.GL_TEXTURE_2D);
 
             return true;
         }

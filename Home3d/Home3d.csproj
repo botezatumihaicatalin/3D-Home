@@ -55,6 +55,7 @@
     <Compile Include="Camera.cs" />
     <Compile Include="Model\ObjFace.cs" />
     <Compile Include="Model\ObjFaceItem.cs" />
+    <Compile Include="Model\ObjImageTexture.cs" />
     <Compile Include="Model\ObjMaterial.cs" />
     <Compile Include="Model\ObjModel.cs" />
     <Compile Include="Model\ObjNormal.cs" />

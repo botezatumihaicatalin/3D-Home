@@ -15,6 +15,7 @@ namespace Home3d
         private static readonly ObjModel LampModel = new ObjModel();
         private static readonly ObjModel PaintingModel = new ObjModel();
         private static readonly ObjModel PianoModel = new ObjModel();
+        private static readonly ObjModel TexturedModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
         private static int lastX = -1, lastY = -1;
 
@@ -26,26 +27,27 @@ namespace Home3d
             Gl.glClearColor(1, 1, 1, 1);
 
             bool result = false;
-            result = SofaModel.Load("3dmodels/sofa.obj", "3dmodels/sofa.mtl");
+            result = SofaModel.Load("3dmodels/sofa.obj");
             Console.WriteLine("{0} loaded with result : {1}", "sofa.obj", result);
-            result = ChairModel.Load("3dmodels/chair1.obj", "3dmodels/chair1.mtl");
+            result = ChairModel.Load("3dmodels/chair1.obj");
             Console.WriteLine("{0} loaded with result : {1}", "chair1.obj", result);
-            result = SonyTvModel.Load("3dmodels/sonyTV.obj", "3dmodels/sonyTV.mtl");
+            result = SonyTvModel.Load("3dmodels/sonyTV.obj");
             Console.WriteLine("{0} loaded with result : {1}", "sonyTV.obj", result);
-            result = TvTableModel.Load("3dmodels/cofeeTable.obj", "3dmodels/cofeeTable.mtl");
+            result = TvTableModel.Load("3dmodels/cofeeTable.obj");
             Console.WriteLine("{0} loaded with result : {1}", "cofeeTable.obj", result);
-            result = DoorModel.Load("3dmodels/door.obj", "3dmodels/door.mtl");
+            result = DoorModel.Load("3dmodels/door.obj");
             Console.WriteLine("{0} loaded with result : {1}", "door.obj", result);
-            result = LampModel.Load("3dmodels/lamp.obj", "3dmodels/lamp.mtl");
+            result = LampModel.Load("3dmodels/lamp.obj");
             Console.WriteLine("{0} loaded with result : {1}", "lamp.obj", result);
-            result = PaintingModel.Load("3dmodels/painting.obj", "3dmodels/painting.mtl");
+            result = PaintingModel.Load("3dmodels/painting.obj");
             Console.WriteLine("{0} loaded with result : {1}", "painting.obj", result);
-            result = PianoModel.Load("3dmodels/piano.obj", "3dmodels/piano.mtl");
+            result = PianoModel.Load("3dmodels/piano.obj");
             Console.WriteLine("{0} loaded with result : {1}", "piano.obj", result);
+            result = TexturedModel.Load(@"C:\Users\Botezatu\Desktop\untitled.obj");
+            Console.WriteLine("{0} loaded with result : {1}", "untitled.obj", result);
 
             Camera.EyePoint = new Vertex3(0, 4, 0);
             Camera.LookingPoint = new Vertex3(0, 4, -50);
-
         }
 
         static void OnDisplay()

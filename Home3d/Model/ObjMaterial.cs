@@ -14,6 +14,10 @@ namespace Home3d.Model
             Transparency = 1.0;
             Illumination = 2;
             SpecularExponent = 1.0;
+
+            DiffuseTexture = new ObjImageTexture();
+            AmbientTexture = new ObjImageTexture();
+            SpecularTexture = new ObjImageTexture();
         }
 
         public ObjMaterial(string name)
@@ -26,6 +30,10 @@ namespace Home3d.Model
             Transparency = 1.0;
             Illumination = 2;
             SpecularExponent = 1.0;
+
+            DiffuseTexture = new ObjImageTexture();
+            AmbientTexture = new ObjImageTexture();
+            SpecularTexture = new ObjImageTexture();
         }
 
         public string Name { get; set; }
@@ -36,5 +44,9 @@ namespace Home3d.Model
         public double Transparency { get; set; }
         public int Illumination { get; set; }
         public double SpecularExponent { get; set; }
+    
+        public ObjImageTexture DiffuseTexture { get; set; }
+        public ObjImageTexture AmbientTexture { get; set; }
+        public ObjImageTexture SpecularTexture { get; set; }
     }
 }

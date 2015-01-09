@@ -17,6 +17,8 @@ namespace Home3d
         private static readonly ObjModel PianoModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
         private static int _lastX = -1, _lastY = -1;
+        private static double angleX = 0.0;
+        private static double angleY = 0.0;
 
         static void InitGraphics()
         {
@@ -24,7 +26,6 @@ namespace Home3d
             Gl.glEnable(Gl.GL_LIGHT0);
             Gl.glEnable(Gl.GL_DEPTH_TEST);
             Gl.glEnable(Gl.GL_TEXTURE_2D);
-            Gl.glEnable(Gl.GL_NORMALIZE);
             Gl.glClearColor(1, 1, 1, 1);
 
             bool result = false;
@@ -68,6 +69,7 @@ namespace Home3d
             centerVertex.Divide(2);
 
             Gl.glPushMatrix();
+            Gl.glShadeModel(Gl.GL_SMOOTH);
             Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_AMBIENT, new[] { 1f, 1f, 1f });
             Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_DIFFUSE, new[] { 0.5f, 0.5f, 0.5f });
             Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, new[] { 0.5f, 0.5f, 0.5f });
@@ -170,8 +172,8 @@ namespace Home3d
                 obj.Render();
             }
             Gl.glPopMatrix();
+
             Glut.glutSwapBuffers();
-            Glut.glutPostRedisplay();
         }
 
         static void OnReshape(int width, int height)
@@ -190,8 +192,11 @@ namespace Home3d
 
             if (_lastX != -1 && _lastY != -1)
             {
-                Camera.LookingPoint.X += ((x - _lastX) / 10.0);
-                Camera.LookingPoint.Y += ((y - _lastY) / 10.0);
+                Camera.LookingPoint.X = Camera.EyePoint.X + Math.Sin(angleX);
+                Camera.LookingPoint.Z = Camera.EyePoint.Z + Math.Cos(angleX);
+                Camera.LookingPoint.Y = Camera.EyePoint.Y + Math.Sin(angleY);
+                angleX += (_lastX - x) / 100.0;
+                angleY -= (_lastY - y) / 100.0;
                 _lastX = x;
                 _lastY = y;
             }

@@ -37,6 +37,8 @@ namespace Home3d.Model
 
             using (var bitmapImage = new Bitmap(path))
             {
+                bitmapImage.RotateFlip(RotateFlipType.Rotate180FlipX);
+                bitmapImage.RotateFlip(RotateFlipType.Rotate180FlipY);
                 var bitmapImageData = bitmapImage.LockBits(
                     new Rectangle(0, 0, bitmapImage.Width, bitmapImage.Height),
                     ImageLockMode.ReadOnly,

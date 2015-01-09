@@ -441,9 +441,6 @@ namespace Home3d.Model
             // Calulcate min vetexes and max vertexes
             CalculateMaxAndMinVertex();
 
-            //Gl.glEnable(Gl.GL_NORMALIZE);
-            //Gl.glEnable(Gl.GL_TEXTURE_2D);
-
             // Build the objects into GPU
             foreach (var modelObject in Objects.Values)
             {
@@ -479,13 +476,12 @@ namespace Home3d.Model
                         Gl.glVertex3d(vertex.X, vertex.Y, vertex.Z);
                     }
                     Gl.glEnd();
+
                     lastFaceMaterial = face.MaterialName;
                 }
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
                 Gl.glEndList();
             }
-
-            //Gl.glDisable(Gl.GL_NORMALIZE);
-            //Gl.glDisable(Gl.GL_TEXTURE_2D);
 
             return true;
         }

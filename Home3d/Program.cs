@@ -15,15 +15,16 @@ namespace Home3d
         private static readonly ObjModel LampModel = new ObjModel();
         private static readonly ObjModel PaintingModel = new ObjModel();
         private static readonly ObjModel PianoModel = new ObjModel();
-        private static readonly ObjModel TexturedModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
-        private static int lastX = -1, lastY = -1;
+        private static int _lastX = -1, _lastY = -1;
 
         static void InitGraphics()
         {
             Gl.glEnable(Gl.GL_LIGHTING);
             Gl.glEnable(Gl.GL_LIGHT0);
             Gl.glEnable(Gl.GL_DEPTH_TEST);
+            Gl.glEnable(Gl.GL_TEXTURE_2D);
+            Gl.glEnable(Gl.GL_NORMALIZE);
             Gl.glClearColor(1, 1, 1, 1);
 
             bool result = false;
@@ -43,8 +44,6 @@ namespace Home3d
             Console.WriteLine("{0} loaded with result : {1}", "painting.obj", result);
             result = PianoModel.Load("3dmodels/piano.obj");
             Console.WriteLine("{0} loaded with result : {1}", "piano.obj", result);
-            result = TexturedModel.Load(@"C:\Users\Botezatu\Desktop\untitled2.obj");
-            Console.WriteLine("{0} loaded with result : {1}", "untitled2.obj", result);
 
             Camera.EyePoint = new Vertex3(0, 4, 0);
             Camera.LookingPoint = new Vertex3(0, 4, -50);
@@ -54,21 +53,12 @@ namespace Home3d
         {
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
             Gl.glLoadIdentity();
-            
+
             Camera.PositionCamera();
 
-            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1 , 10 , -20 });
+            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1, 10, -20 });
             Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
             Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
-
-            Gl.glPushMatrix();
-            Gl.glTranslated(1, 1 , -20);
-            Gl.glScaled(1, 1, 1);
-            foreach (var obj in TexturedModel.Objects.Values)
-            {
-                obj.Render();
-            }
-            Gl.glPopMatrix();
 
             var minVertex = new Vertex3(-12.0, 0.0, 0.0);
             var maxVertex = new Vertex3(12.0, 10.0, -23.0);
@@ -180,8 +170,8 @@ namespace Home3d
                 obj.Render();
             }
             Gl.glPopMatrix();
-
             Glut.glutSwapBuffers();
+            Glut.glutPostRedisplay();
         }
 
         static void OnReshape(int width, int height)
@@ -193,21 +183,25 @@ namespace Home3d
             Gl.glMatrixMode(Gl.GL_MODELVIEW);
         }
 
-        static void MouseMove(int x, int y) {
-	        
-	        y = Glut.glutGet(Glut.GLUT_WINDOW_HEIGHT) - y;
+        static void MouseMove(int x, int y)
+        {
 
-	        if (lastX != -1 && lastY != -1) {
-		        Camera.LookingPoint.X += ((x - lastX) / 10.0);
-		        Camera.LookingPoint.Y += ((y - lastY) / 10.0);
-		        lastX = x;
-		        lastY = y;
-	        } else {
-		        lastX = x;
-		        lastY = y;
-	        }
+            y = Glut.glutGet(Glut.GLUT_WINDOW_HEIGHT) - y;
 
-	        Glut.glutPostRedisplay();
+            if (_lastX != -1 && _lastY != -1)
+            {
+                Camera.LookingPoint.X += ((x - _lastX) / 10.0);
+                Camera.LookingPoint.Y += ((y - _lastY) / 10.0);
+                _lastX = x;
+                _lastY = y;
+            }
+            else
+            {
+                _lastX = x;
+                _lastY = y;
+            }
+
+            Glut.glutPostRedisplay();
         }
 
         static void KeyPressed(byte key, int x, int y)

@@ -441,8 +441,8 @@ namespace Home3d.Model
             // Calulcate min vetexes and max vertexes
             CalculateMaxAndMinVertex();
 
-            Gl.glEnable(Gl.GL_NORMALIZE);
-            Gl.glEnable(Gl.GL_TEXTURE_2D);
+            //Gl.glEnable(Gl.GL_NORMALIZE);
+            //Gl.glEnable(Gl.GL_TEXTURE_2D);
 
             // Build the objects into GPU
             foreach (var modelObject in Objects.Values)
@@ -455,7 +455,6 @@ namespace Home3d.Model
                     if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial && Materials.ContainsKey(face.MaterialName)))
                     {
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
-                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
                         Gl.glActiveTexture(Gl.GL_TEXTURE0);
@@ -485,8 +484,8 @@ namespace Home3d.Model
                 Gl.glEndList();
             }
 
-            Gl.glDisable(Gl.GL_NORMALIZE);
-            Gl.glDisable(Gl.GL_TEXTURE_2D);
+            //Gl.glDisable(Gl.GL_NORMALIZE);
+            //Gl.glDisable(Gl.GL_TEXTURE_2D);
 
             return true;
         }

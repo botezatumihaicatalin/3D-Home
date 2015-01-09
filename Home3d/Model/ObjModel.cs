@@ -458,12 +458,12 @@ namespace Home3d.Model
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
+                        Gl.glActiveTexture(Gl.GL_TEXTURE0);
+                        Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
                     }
+
                     Gl.glShadeModel(Gl.GL_SMOOTH);
                     Gl.glBegin(Gl.GL_POLYGON);
-                    
-                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
-
                     foreach (var faceItem in face.FaceItems)
                     {
                         if (faceItem.NormalIndex != -1)

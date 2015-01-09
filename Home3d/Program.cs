@@ -43,8 +43,8 @@ namespace Home3d
             Console.WriteLine("{0} loaded with result : {1}", "painting.obj", result);
             result = PianoModel.Load("3dmodels/piano.obj");
             Console.WriteLine("{0} loaded with result : {1}", "piano.obj", result);
-            result = TexturedModel.Load(@"C:\Users\Botezatu\Desktop\untitled.obj");
-            Console.WriteLine("{0} loaded with result : {1}", "untitled.obj", result);
+            result = TexturedModel.Load(@"C:\Users\Botezatu\Desktop\untitled2.obj");
+            Console.WriteLine("{0} loaded with result : {1}", "untitled2.obj", result);
 
             Camera.EyePoint = new Vertex3(0, 4, 0);
             Camera.LookingPoint = new Vertex3(0, 4, -50);
@@ -62,8 +62,12 @@ namespace Home3d
             Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
 
             Gl.glPushMatrix();
-            Gl.glTranslated(1, 10 , -20);
-            Glut.glutSolidCube(0.1);
+            Gl.glTranslated(1, 1 , -20);
+            Gl.glScaled(1, 1, 1);
+            foreach (var obj in TexturedModel.Objects.Values)
+            {
+                obj.Render();
+            }
             Gl.glPopMatrix();
 
             var minVertex = new Vertex3(-12.0, 0.0, 0.0);

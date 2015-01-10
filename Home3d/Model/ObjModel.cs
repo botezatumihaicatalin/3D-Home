@@ -6,6 +6,10 @@ using Tao.OpenGl;
 
 namespace Home3d.Model
 {
+    /// <summary>
+    /// The class which holds all the information about the model :
+    /// vertices , normals , textures , materials etc..
+    /// </summary>
     public class ObjModel
     {
         public ObjModel()
@@ -30,6 +34,9 @@ namespace Home3d.Model
         public ObjVertex MinimumVertex { get; private set; }
         public ObjVertex MaximumVertex { get; private set; }
 
+        /// <summary>
+        /// Calculates the bounding box of the obj model.
+        /// </summary>
         public void CalculateMaxAndMinVertex()
         {
             MinimumVertex.X = Double.MaxValue;
@@ -70,6 +77,11 @@ namespace Home3d.Model
             }
         }
 
+        /// <summary>
+        /// Loads an mtl file. If the file contains invalid tokens then the method returns false, otherwise true.
+        /// </summary>
+        /// <param name="objMaterialPath">The path to the mtl file.</param>
+        /// <returns>True if the load succedeed or false either way.</returns>
         public bool LoadMaterial(string objMaterialPath)
         {
             if (!File.Exists(objMaterialPath))
@@ -283,6 +295,11 @@ namespace Home3d.Model
             return true;
         }
 
+        /// <summary>
+        /// Loads an obj file. If the file contains invalid tokens then the method returns false, otherwise true.
+        /// </summary>
+        /// <param name="objModelPath">The path to the obj file.</param>
+        /// <returns>True if the load succedeed or false either way.</returns>
         public bool Load(string objModelPath)
         {
             if (!File.Exists(objModelPath))
@@ -441,49 +458,76 @@ namespace Home3d.Model
             // Calulcate min vetexes and max vertexes
             CalculateMaxAndMinVertex();
 
-            // Build the objects into GPU
-            foreach (var modelObject in Objects.Values)
+            foreach (var objObject in Objects.Values)
             {
-                var lastFaceMaterial = string.Empty;
-                Gl.glNewList(modelObject.ListId, Gl.GL_COMPILE);
-                foreach (var face in modelObject.Faces)
-                {
-                    var material = Materials[face.MaterialName];
-                    if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial && Materials.ContainsKey(face.MaterialName)))
-                    {
-                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
-                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
-                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
-                        Gl.glActiveTexture(Gl.GL_TEXTURE0);
-                        Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
-                    }
-
-                    Gl.glShadeModel(Gl.GL_SMOOTH);
-                    Gl.glBegin(Gl.GL_POLYGON);
-                    foreach (var faceItem in face.FaceItems)
-                    {
-                        if (faceItem.NormalIndex != -1)
-                        {
-                            var normal = Normals[faceItem.NormalIndex];
-                            Gl.glNormal3d(normal.X, normal.Y, normal.Z);
-                        }
-                        if (faceItem.TextureIndex != -1)
-                        {
-                            var texture = Textures[faceItem.TextureIndex];
-                            Gl.glTexCoord2d(texture.X * material.DiffuseTexture.ScaleU , texture.Y * material.DiffuseTexture.ScaleV);
-                        }
-                        var vertex = Vertices[faceItem.VertexIndex];
-                        Gl.glVertex3d(vertex.X, vertex.Y, vertex.Z);
-                    }
-                    Gl.glEnd();
-
-                    lastFaceMaterial = face.MaterialName;
-                }
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
-                Gl.glEndList();
+                BuildObject(objObject);
             }
 
             return true;
+        }
+
+        /// <summary>
+        /// Builds the object into GPU using OPENGL lists.
+        /// </summary>
+        /// <param name="modelObject">The object to be built</param>
+        public void BuildObject(ObjObject modelObject)
+        {
+            if (modelObject == null)
+            {
+                return;
+            }
+            var lastFaceMaterial = string.Empty;
+            Gl.glNewList(modelObject.ListId, Gl.GL_COMPILE);
+            foreach (var face in modelObject.Faces)
+            {
+                var material = Materials[face.MaterialName];
+                if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial && Materials.ContainsKey(face.MaterialName)))
+                {
+                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
+                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
+                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
+                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
+                    Gl.glActiveTexture(Gl.GL_TEXTURE0);
+                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
+                }
+
+                Gl.glShadeModel(Gl.GL_SMOOTH);
+                Gl.glBegin(Gl.GL_POLYGON);
+                foreach (var faceItem in face.FaceItems)
+                {
+                    if (faceItem.NormalIndex != -1)
+                    {
+                        var normal = Normals[faceItem.NormalIndex];
+                        Gl.glNormal3d(normal.X, normal.Y, normal.Z);
+                    }
+                    if (faceItem.TextureIndex != -1)
+                    {
+                        var texture = Textures[faceItem.TextureIndex];
+                        Gl.glTexCoord2d(texture.X * material.DiffuseTexture.ScaleU, texture.Y * material.DiffuseTexture.ScaleV);
+                    }
+                    var vertex = Vertices[faceItem.VertexIndex];
+                    Gl.glVertex3d(vertex.X, vertex.Y, vertex.Z);
+                }
+                Gl.glEnd();
+
+                lastFaceMaterial = face.MaterialName;
+            }
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+            Gl.glEndList();
+        }
+
+        /// <summary>
+        /// Builds the object into GPU using OPENGL lists.
+        /// </summary>
+        /// <param name="objectName">The object name which will be built. If the object doesnt exist then nothing is done.</param>
+        public void BuildObject(string objectName)
+        {
+            if (!Objects.ContainsKey(objectName))
+            {
+                return;
+            }
+            var modelObject = Objects[objectName]; 
+            BuildObject(modelObject);
         }
     }
 }

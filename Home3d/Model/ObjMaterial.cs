@@ -1,7 +1,8 @@
-﻿using System.Drawing;
-
-namespace Home3d.Model
+﻿namespace Home3d.Model
 {
+    /// <summary>
+    /// A class which contains information about material colours and textures. 
+    /// </summary>
     public class ObjMaterial
     {
         public ObjMaterial()

@@ -1,9 +1,13 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Tao.OpenGl;
 
 namespace Home3d.Model
 {
-    public class ObjObject
+    /// <summary>
+    /// An individual obj object which contains information about it's faces.
+    /// </summary>
+    public class ObjObject : IDisposable
     {
         public ObjObject()
         {
@@ -26,9 +30,9 @@ namespace Home3d.Model
             Gl.glCallList(ListId);
         }
 
-        ~ObjObject()
+        public void Dispose()
         {
-            //Gl.glDeleteLists(ListId, 1);
+            Gl.glDeleteLists(ListId, 1);
         }
     }
 }

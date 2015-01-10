@@ -6,6 +6,9 @@ using Tao.OpenGl;
 
 namespace Home3d.Model
 {
+    /// <summary>
+    /// A class which contains OPEN GL texture binding information
+    /// </summary>
     public class ObjImageTexture : IDisposable
     {
         public ObjImageTexture()
@@ -19,6 +22,12 @@ namespace Home3d.Model
         public double ScaleU { get; set; }
         public double ScaleV { get; set; }
 
+        /// <summary>
+        /// Loads a texture from a path.
+        /// Only supports PNG images.
+        /// </summary>
+        /// <param name="path">Path to image.</param>
+        /// <returns>True is the load succedeed either way false.</returns>
         public bool LoadImage(string path)
         {
             if (Texture == 0)

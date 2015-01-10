@@ -476,8 +476,13 @@ namespace Home3d.Model
             {
                 return;
             }
+
             var lastFaceMaterial = string.Empty;
             Gl.glNewList(modelObject.ListId, Gl.GL_COMPILE);
+
+            int previousTexture;
+            Gl.glGetIntegerv(Gl.GL_TEXTURE_BINDING_2D, out previousTexture);
+
             foreach (var face in modelObject.Faces)
             {
                 var material = Materials[face.MaterialName];
@@ -512,7 +517,7 @@ namespace Home3d.Model
 
                 lastFaceMaterial = face.MaterialName;
             }
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, previousTexture);
             Gl.glEndList();
         }
 

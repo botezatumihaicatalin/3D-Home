@@ -30,17 +30,24 @@ namespace Home3d.Model
         /// <returns>True is the load succedeed either way false.</returns>
         public bool LoadImage(string path)
         {
+            // If the texture wasn't generated we generate it now.
             if (Texture == 0)
             {
                 uint texture;
                 Gl.glGenTextures(1, out texture);
                 Texture = texture;
             }
+
+            // We need to preserve the state of the binding so we dont mess up.
+            // So we have to get the previous binding and after we are done we rebind it.
+            int previousTexture;
+            Gl.glGetIntegerv(Gl.GL_TEXTURE_BINDING_2D, out previousTexture);
+
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, Texture);
 
             if (!File.Exists(path))
             {
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+                Gl.glBindTexture(Gl.GL_TEXTURE_2D, previousTexture);
                 return false;
             }
 
@@ -52,8 +59,9 @@ namespace Home3d.Model
                     new Rectangle(0, 0, bitmapImage.Width, bitmapImage.Height),
                     ImageLockMode.ReadOnly,
                     PixelFormat.Format32bppRgb);
-                Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_S, Gl.GL_REPEAT);
-                Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_WRAP_T, Gl.GL_REPEAT);
+                Gl.glTexParameteri(Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_S, Gl.GL_CLAMP_TO_EDGE);
+                Gl.glTexParameteri(Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_T, Gl.GL_CLAMP_TO_EDGE);
+                Gl.glTexParameteri(Gl.GL_TEXTURE_CUBE_MAP, Gl.GL_TEXTURE_WRAP_R, Gl.GL_CLAMP_TO_EDGE);
                 Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MAG_FILTER, Gl.GL_LINEAR);
                 Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_TEXTURE_MIN_FILTER, Gl.GL_LINEAR_MIPMAP_LINEAR);
                 Gl.glTexParameteri(Gl.GL_TEXTURE_2D, Gl.GL_GENERATE_MIPMAP, Gl.GL_TRUE);
@@ -61,14 +69,14 @@ namespace Home3d.Model
                 bitmapImage.UnlockBits(bitmapImageData);
             }
 
-            Gl.glBindTexture(Gl.GL_TEXTURE_2D, 0);
+            Gl.glBindTexture(Gl.GL_TEXTURE_2D, previousTexture);
 
             return true;
         }
 
         public void Dispose()
         {
-            uint texture = Texture;
+            var texture = Texture;
             if (texture == 0)
             {
                 return;

@@ -17,8 +17,8 @@ namespace Home3d
         private static readonly ObjModel PianoModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
         private static int _lastX = -1, _lastY = -1;
-        private static double angleX = 0.0;
-        private static double angleY = 0.0;
+        private static double _angleX = 0.0;
+        private static double _angleY = 0.0;
 
         static void InitGraphics()
         {
@@ -28,7 +28,7 @@ namespace Home3d
             Gl.glEnable(Gl.GL_TEXTURE_2D);
             Gl.glClearColor(1, 1, 1, 1);
 
-            bool result = false;
+            var result = false;
             result = SofaModel.Load("3dmodels/sofa.obj");
             Console.WriteLine("{0} loaded with result : {1}", "sofa.obj", result);
             result = ChairModel.Load("3dmodels/chair1.obj");
@@ -70,10 +70,10 @@ namespace Home3d
 
             Gl.glPushMatrix();
             Gl.glShadeModel(Gl.GL_SMOOTH);
-            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_AMBIENT, new[] { 1f, 1f, 1f });
-            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_DIFFUSE, new[] { 0.5f, 0.5f, 0.5f });
-            Gl.glMaterialfv(Gl.GL_FRONT_AND_BACK, Gl.GL_EMISSION, new[] { 0.5f, 0.5f, 0.5f });
-            Gl.glMaterialfv(Gl.GL_BACK, Gl.GL_SPECULAR, new[] { 0.5f, 0.5f, 0.5f });
+            Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, new[] { 201 / 255.0f, 173 / 255.0f, 48 / 255.0f });
+            Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, new[] { 222 / 255.0f, 191 / 255.0f, 53 / 255.0f });
+            Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, new[] { 0.1f , 0.1f, 0.1f });
+            
             Gl.glTranslated(centerVertex.X, centerVertex.Y, centerVertex.Z);
             Gl.glScaled(maxVertex.X - minVertex.X, maxVertex.Y - minVertex.Y, maxVertex.Z - minVertex.Z);
             Glut.glutSolidCube(1);
@@ -166,7 +166,7 @@ namespace Home3d
             Gl.glTranslated(0, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -22);
             Gl.glTranslated(0, (SofaModel.MaximumVertex.Y - SofaModel.MinimumVertex.Y), 0);
             Gl.glTranslated(0, 2, 0);
-            Gl.glRotated(-90 , 0 , 1 , 0);
+            Gl.glRotated(-90, 0, 1, 0);
             foreach (var obj in PaintingModel.Objects.Values)
             {
                 obj.Render();
@@ -192,11 +192,11 @@ namespace Home3d
 
             if (_lastX != -1 && _lastY != -1)
             {
-                Camera.LookingPoint.X = Camera.EyePoint.X + Math.Sin(angleX);
-                Camera.LookingPoint.Z = Camera.EyePoint.Z + Math.Cos(angleX);
-                Camera.LookingPoint.Y = Camera.EyePoint.Y + Math.Sin(angleY);
-                angleX += (_lastX - x) / 100.0;
-                angleY -= (_lastY - y) / 100.0;
+                Camera.LookingPoint.X = Camera.EyePoint.X + Math.Sin(_angleX);
+                Camera.LookingPoint.Z = Camera.EyePoint.Z + Math.Cos(_angleX);
+                Camera.LookingPoint.Y = Camera.EyePoint.Y + Math.Sin(_angleY);
+                _angleX += (_lastX - x) / 100.0;
+                _angleY -= (_lastY - y) / 100.0;
                 _lastX = x;
                 _lastY = y;
             }

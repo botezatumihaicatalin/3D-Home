@@ -30,6 +30,21 @@ namespace Home3d.Model
         /// <returns>True is the load succedeed either way false.</returns>
         public bool LoadImage(string path)
         {
+            if (!File.Exists(path))
+            {
+                return false;
+            }
+
+            if (!Path.HasExtension(path))
+            {
+                return false;
+            }
+
+            if (Path.GetExtension(path) != ".png")
+            {
+                return false;
+            }
+
             // If the texture wasn't generated we generate it now.
             if (Texture == 0)
             {
@@ -43,13 +58,8 @@ namespace Home3d.Model
             int previousTexture;
             Gl.glGetIntegerv(Gl.GL_TEXTURE_BINDING_2D, out previousTexture);
 
+            // Bind the current texture.
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, Texture);
-
-            if (!File.Exists(path))
-            {
-                Gl.glBindTexture(Gl.GL_TEXTURE_2D, previousTexture);
-                return false;
-            }
 
             using (var bitmapImage = new Bitmap(path))
             {

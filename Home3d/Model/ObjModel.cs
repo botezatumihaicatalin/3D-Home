@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using Tao.OpenGl;
 
 namespace Home3d.Model
@@ -92,7 +93,8 @@ namespace Home3d.Model
             var objMaterialFolder = Path.GetDirectoryName(objMaterialPath) ?? string.Empty;
             var objMaterialStreamReader = new StreamReader(objMaterialPath);
             var lastMaterialNameRead = string.Empty;
-            var line = string.Empty;
+            string line;
+            const char lineSeparator = ' ';
 
             while ((line = objMaterialStreamReader.ReadLine()) != null)
             {
@@ -101,8 +103,8 @@ namespace Home3d.Model
                     continue;
                 }
 
-                var splittedLine = new List<string>(line.Split(' '));
-                var splittedLineSize = splittedLine.Count;
+                var splittedLine = line.Split(lineSeparator);
+                var splittedLineSize = splittedLine.Length;
 
                 if (splittedLineSize == 0)
                 {
@@ -116,13 +118,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "newmtl" && splittedLineSize >= 2)
                 {
-                    var materialName = string.Empty;
-
-                    for (int index = 1; index < splittedLineSize; index++)
-                    {
-                        materialName += splittedLine[index];
-                    }
-
+                    var materialName = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
                     lastMaterialNameRead = materialName;
                     Materials[lastMaterialNameRead] = new ObjMaterial(lastMaterialNameRead);
                     continue;
@@ -220,15 +216,23 @@ namespace Home3d.Model
                         return false;
                     }
                     var material = Materials[lastMaterialNameRead];
-                    if (splittedLine.Count == 6)
+                    if (splittedLine.Length >= 6 && splittedLine[1] == "-o")
                     {
-                        material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
                         material.AmbientTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
                         material.AmbientTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(5));
+                        if (material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
-                    else if (splittedLine.Count == 2)
+                    else if (splittedLine.Length >= 2)
                     {
-                        material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
+                        if (material.AmbientTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -244,15 +248,23 @@ namespace Home3d.Model
                         return false;
                     }
                     var material = Materials[lastMaterialNameRead];
-                    if (splittedLine.Count == 6)
+                    if (splittedLine.Length >= 6 && splittedLine[1] == "-o")
                     {
-                        material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
                         material.DiffuseTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
                         material.DiffuseTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(5));
+                        if (!material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
-                    else if (splittedLine.Count == 2)
+                    else if (splittedLine.Length >= 2)
                     {
-                        material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
+                        if (!material.DiffuseTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -268,15 +280,23 @@ namespace Home3d.Model
                         return false;
                     }
                     var material = Materials[lastMaterialNameRead];
-                    if (splittedLine.Count == 6)
+                    if (splittedLine.Length >= 6 && splittedLine[1] == "-o")
                     {
-                        material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[5]));
                         material.SpecularTexture.ScaleU = double.Parse(splittedLine[2], CultureInfo.InvariantCulture);
                         material.SpecularTexture.ScaleV = double.Parse(splittedLine[3], CultureInfo.InvariantCulture);
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(5));
+                        if (!material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
-                    else if (splittedLine.Count == 2)
+                    else if (splittedLine.Length >= 2)
                     {
-                        material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, splittedLine[1]));
+                        var texturePath = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
+                        if (!material.SpecularTexture.LoadImage(Path.Combine(objMaterialFolder, texturePath)))
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
@@ -313,10 +333,11 @@ namespace Home3d.Model
             string line;
             var lastObjectMaterialRead = string.Empty;
             var lastObjectNameRead = string.Empty;
+            const char lineSeparator = ' ';
 
             while ((line = objModelStreamReader.ReadLine()) != null)
             {
-                var splittedLine = line.Split(' ');
+                var splittedLine = line.Split(lineSeparator);
                 var splittedLineSize = splittedLine.Length;
 
                 if (splittedLineSize == 0)
@@ -331,7 +352,8 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "mtllib" && splittedLineSize >= 2)
                 {
-                    if (!LoadMaterial(Path.Combine(objModelFolder, splittedLine[1])))
+                    var materialFileName = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
+                    if (!LoadMaterial(Path.Combine(objModelFolder, materialFileName)))
                     {
                         return false;
                     }
@@ -416,11 +438,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "o" && splittedLineSize >= 2)
                 {
-                    var objectName = string.Empty;
-                    for (var index = 1; index < splittedLineSize; index++)
-                    {
-                        objectName += splittedLine[index];
-                    }
+                    var objectName = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
                     Objects[objectName] = new ObjObject(objectName);
                     lastObjectNameRead = objectName;
                     continue;
@@ -428,15 +446,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "usemtl" && splittedLineSize >= 2)
                 {
-                    var materialName = string.Empty;
-                    for (var index = 1; index < splittedLineSize; index++)
-                    {
-                        materialName += splittedLine[index];
-                    }
-                    if (!Materials.ContainsKey(materialName))
-                    {
-                        return false;
-                    }
+                    var materialName = string.Join(new string(lineSeparator, 1), splittedLine.Skip(1));
                     lastObjectMaterialRead = materialName;
                     continue;
                 }

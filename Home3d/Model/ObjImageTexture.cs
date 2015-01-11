@@ -63,8 +63,7 @@ namespace Home3d.Model
 
             using (var bitmapImage = new Bitmap(path))
             {
-                bitmapImage.RotateFlip(RotateFlipType.Rotate180FlipX);
-                bitmapImage.RotateFlip(RotateFlipType.Rotate180FlipY);
+                bitmapImage.RotateFlip(RotateFlipType.RotateNoneFlipY);
                 var bitmapImageData = bitmapImage.LockBits(
                     new Rectangle(0, 0, bitmapImage.Width, bitmapImage.Height),
                     ImageLockMode.ReadOnly,
@@ -79,6 +78,7 @@ namespace Home3d.Model
                 bitmapImage.UnlockBits(bitmapImageData);
             }
 
+            // Rebind last texture.
             Gl.glBindTexture(Gl.GL_TEXTURE_2D, previousTexture);
 
             return true;

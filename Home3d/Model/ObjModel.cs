@@ -211,6 +211,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "map_Ka" && splittedLineSize >= 2)
                 {
+                    // TODO : Need to add all options here, for complete parsing.
                     if (!Materials.ContainsKey(lastMaterialNameRead))
                     {
                         return false;
@@ -243,6 +244,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "map_Kd" && splittedLineSize >= 2)
                 {
+                    // TODO : Need to add all options here, for complete parsing.
                     if (!Materials.ContainsKey(lastMaterialNameRead))
                     {
                         return false;
@@ -275,6 +277,7 @@ namespace Home3d.Model
 
                 if (splittedLine[0] == "map_Ks" && splittedLineSize >= 2)
                 {
+                    // TODO : Need to add all options here, for complete parsing.
                     if (!Materials.ContainsKey(lastMaterialNameRead))
                     {
                         return false;
@@ -495,15 +498,18 @@ namespace Home3d.Model
 
             foreach (var face in modelObject.Faces)
             {
-                var material = Materials[face.MaterialName];
-                if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial && Materials.ContainsKey(face.MaterialName)))
+                if ((lastFaceMaterial == string.Empty) || (lastFaceMaterial != string.Empty && face.MaterialName != lastFaceMaterial))
                 {
-                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
-                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
-                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
-                    Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
-                    Gl.glActiveTexture(Gl.GL_TEXTURE0);
-                    Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
+                    if (Materials.ContainsKey(face.MaterialName))
+                    {
+                        var material = Materials[face.MaterialName];
+                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
+                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
+                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
+                        Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
+                        Gl.glActiveTexture(Gl.GL_TEXTURE0);
+                        Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);
+                    }
                 }
 
                 Gl.glShadeModel(Gl.GL_SMOOTH);
@@ -518,7 +524,7 @@ namespace Home3d.Model
                     if (faceItem.TextureIndex != -1)
                     {
                         var texture = Textures[faceItem.TextureIndex];
-                        Gl.glTexCoord2d(texture.X * material.DiffuseTexture.ScaleU, texture.Y * material.DiffuseTexture.ScaleV);
+                        Gl.glTexCoord2d(texture.X, texture.Y);
                     }
                     var vertex = Vertices[faceItem.VertexIndex];
                     Gl.glVertex3d(vertex.X, vertex.Y, vertex.Z);

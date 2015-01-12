@@ -505,7 +505,6 @@ namespace Home3d.Model
                         var material = Materials[face.MaterialName];
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_AMBIENT, material.AmbientColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_DIFFUSE, material.DiffuseColor.ToFloatArray());
-                        //Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_EMISSION, material.DiffuseColor.ToFloatArray());
                         Gl.glMaterialfv(Gl.GL_FRONT, Gl.GL_SPECULAR, material.SpecularColor.ToFloatArray());
                         Gl.glActiveTexture(Gl.GL_TEXTURE0);
                         Gl.glBindTexture(Gl.GL_TEXTURE_2D, material.DiffuseTexture.Texture);

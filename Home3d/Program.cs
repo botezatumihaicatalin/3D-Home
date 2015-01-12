@@ -64,12 +64,12 @@ namespace Home3d
             Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
             Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
            
-            Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_POSITION, new[] { -10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0f, -21.0f });
+            Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_POSITION, new[] { -10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y), -21.0f });
             Gl.glLightf(Gl.GL_LIGHT1, Gl.GL_SPOT_CUTOFF, 180.0f);
             Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
             Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
 
-            Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_POSITION, new[] { 10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0f, -21.0f });
+            Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_POSITION, new[] { 10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y), -21.0f });
             Gl.glLightf(Gl.GL_LIGHT2, Gl.GL_SPOT_CUTOFF, 180.0f);
             Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
             Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });

@@ -19,13 +19,21 @@ namespace Home3d
         private static int _lastX = -1, _lastY = -1;
         private static double _angleX = 0.0;
         private static double _angleY = 0.0;
+        private static bool _fogEnabled = true;
+        private static bool _light0Enabled = true;
+        private static bool _light1Enabled = true;
+        private static bool _light2Enabled = true;
 
         static void InitGraphics()
         {
             Gl.glEnable(Gl.GL_LIGHTING);
             Gl.glEnable(Gl.GL_LIGHT0);
+            Gl.glEnable(Gl.GL_LIGHT1);
+            Gl.glEnable(Gl.GL_LIGHT2);
             Gl.glEnable(Gl.GL_DEPTH_TEST);
             Gl.glEnable(Gl.GL_TEXTURE_2D);
+            Gl.glEnable(Gl.GL_BLEND);
+            Gl.glEnable(Gl.GL_FOG);
             Gl.glClearColor(1, 1, 1, 1);
 
             var result = false;
@@ -50,6 +58,32 @@ namespace Home3d
             Camera.LookingPoint = new Vertex3(0, 4, -50);
         }
 
+        static void InitLights()
+        {
+            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1, 9, -20 });
+            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
+            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
+           
+            Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_POSITION, new[] { -10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0f, -21.0f });
+            Gl.glLightf(Gl.GL_LIGHT1, Gl.GL_SPOT_CUTOFF, 180.0f);
+            Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
+            Gl.glLightfv(Gl.GL_LIGHT1, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
+
+            Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_POSITION, new[] { 10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0f, -21.0f });
+            Gl.glLightf(Gl.GL_LIGHT2, Gl.GL_SPOT_CUTOFF, 180.0f);
+            Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
+            Gl.glLightfv(Gl.GL_LIGHT2, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
+        }
+
+        static void InitFog()
+        {
+            var fogColor = new[] { 0.7f, 0.7f, 0.7f, 0.7f };
+            Gl.glFogf(Gl.GL_FOG_MODE, Gl.GL_LINEAR);
+            Gl.glFogf(Gl.GL_FOG_START, 0);
+            Gl.glFogf(Gl.GL_FOG_END, 20);
+            Gl.glFogfv(Gl.GL_FOG_COLOR, fogColor);
+        }
+
         static void OnDisplay()
         {
             Gl.glClear(Gl.GL_COLOR_BUFFER_BIT | Gl.GL_DEPTH_BUFFER_BIT);
@@ -57,9 +91,8 @@ namespace Home3d
 
             Camera.PositionCamera();
 
-            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_POSITION, new float[] { 1, 10, -20 });
-            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_AMBIENT_AND_DIFFUSE, new float[] { 1, 1, 1 });
-            Gl.glLightfv(Gl.GL_LIGHT0, Gl.GL_SPECULAR, new float[] { 1, 1, 1 });
+            InitLights();
+            InitFog();
 
             var minVertex = new Vertex3(-12.0, 0.0, 0.0);
             var maxVertex = new Vertex3(12.0, 10.0, -23.0);
@@ -237,6 +270,58 @@ namespace Home3d
             {
                 Camera.EyePoint.X += 1;
                 Camera.LookingPoint.X += 1;
+            } 
+            else if (key == 'f')
+            {
+                if (_fogEnabled)
+                {
+                    Gl.glDisable(Gl.GL_FOG);
+                    _fogEnabled = false;
+                }
+                else
+                {
+                    Gl.glEnable(Gl.GL_FOG);
+                    _fogEnabled = true;
+                }
+            } 
+            else if (key == 'm')
+            {
+                if (_light0Enabled)
+                {
+                    Gl.glDisable(Gl.GL_LIGHT0);
+                    _light0Enabled = false;
+                }
+                else
+                {
+                    Gl.glEnable(Gl.GL_LIGHT0);
+                    _light0Enabled = true;
+                }
+            } 
+            else if (key == 'k')
+            {
+                if (_light1Enabled)
+                {
+                    Gl.glDisable(Gl.GL_LIGHT1);
+                    _light1Enabled = false;
+                }
+                else
+                {
+                    Gl.glEnable(Gl.GL_LIGHT1);
+                    _light1Enabled = true;
+                }
+            }
+            else if (key == 'l')
+            {
+                if (_light2Enabled)
+                {
+                    Gl.glDisable(Gl.GL_LIGHT2);
+                    _light2Enabled = false;
+                }
+                else
+                {
+                    Gl.glEnable(Gl.GL_LIGHT2);
+                    _light2Enabled = true;
+                }
             }
 
             Glut.glutPostRedisplay();
@@ -246,7 +331,7 @@ namespace Home3d
         {
             Glut.glutInit();
             Glut.glutInitWindowSize(1300, 768);
-            Glut.glutCreateWindow("Tao Example");
+            Glut.glutCreateWindow("Living room");
             InitGraphics();
             Glut.glutDisplayFunc(OnDisplay);
             Glut.glutReshapeFunc(OnReshape);

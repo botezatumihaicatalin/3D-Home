@@ -17,6 +17,7 @@ namespace Home3d
         private static readonly ObjModel LampModel = new ObjModel();
         private static readonly ObjModel PaintingModel = new ObjModel();
         private static readonly ObjModel PianoModel = new ObjModel();
+        private static readonly ObjModel RoomModel = new ObjModel();
         private static readonly Camera Camera = new Camera();
         private static double _angleX = 0.0;
         private static double _angleY = 0.0;
@@ -53,6 +54,7 @@ namespace Home3d
             LampModel.Load("3dmodels/lamp.obj");
             PaintingModel.Load("3dmodels/painting.obj");
             PianoModel.Load("3dmodels/piano.obj");
+            RoomModel.Load("3dmodels/cube.obj");
 
             Camera.EyePoint = new Vertex3(0, 4, 0);
             Camera.LookingPoint = new Vertex3(0, 4, -50);
@@ -61,19 +63,19 @@ namespace Home3d
         private void InitLights()
         {
             GL.Light(LightName.Light0, LightParameter.Position, new float[] { 1, 9, -20 });
-            GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 1, 1, 1 });
+            GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 0, 0, 0 });
             GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1, 1, 1 });
             GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1, 1, 1 });
 
             GL.Light(LightName.Light1, LightParameter.Position, new[] { -10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y), -21.0f });
             GL.Light(LightName.Light1, LightParameter.SpotCutoff, 180.0f);
-            GL.Light(LightName.Light1, LightParameter.Ambient, new float[] { 1, 1, 1 });
+            GL.Light(LightName.Light1, LightParameter.Ambient, new float[] { 0, 0, 0 });
             GL.Light(LightName.Light1, LightParameter.Diffuse, new float[] { 1, 1, 1 });
             GL.Light(LightName.Light1, LightParameter.Specular, new float[] { 1, 1, 1 });
 
             GL.Light(LightName.Light2, LightParameter.Position, new[] { 10.0f, (float)(LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y), -21.0f });
             GL.Light(LightName.Light2, LightParameter.SpotCutoff, 180.0f);
-            GL.Light(LightName.Light2, LightParameter.Ambient, new float[] { 1, 1, 1 });
+            GL.Light(LightName.Light2, LightParameter.Ambient, new float[] { 0, 0, 0 });
             GL.Light(LightName.Light2, LightParameter.Diffuse, new float[] { 1, 1, 1 });
             GL.Light(LightName.Light2, LightParameter.Specular, new float[] { 1, 1, 1 });
         }
@@ -119,13 +121,12 @@ namespace Home3d
             centerVertex.Divide(2);
 
             GL.PushMatrix();
-            GL.ShadeModel(ShadingModel.Smooth);
-            GL.Material(MaterialFace.Front, MaterialParameter.Ambient, new[] { 201 / 255.0f, 173 / 255.0f, 48 / 255.0f });
-            GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new[] { 222 / 255.0f, 191 / 255.0f, 53 / 255.0f });
-            GL.Material(MaterialFace.Front, MaterialParameter.Specular, new[] { 0.1f, 0.1f, 0.1f });
-
             GL.Translate(centerVertex.X, centerVertex.Y, centerVertex.Z);
-            GL.Scale(maxVertex.X - minVertex.X, maxVertex.Y - minVertex.Y, maxVertex.Z - minVertex.Z);
+            GL.Scale(maxVertex.X * 0.5 - minVertex.X * 0.5, maxVertex.Y * 0.5 - minVertex.Y * 0.5, maxVertex.Z * 0.5 - minVertex.Z * 0.5);
+            foreach (var obj in RoomModel.Objects.Values)
+            {
+                obj.Render();
+            }
             
             GL.PopMatrix();
 

@@ -34,6 +34,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External\OpenTK.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenTK.GLControl, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External\OpenTK.GLControl.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -42,14 +50,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
-    <Reference Include="Tao.FreeGlut, Version=2.4.0.2, Culture=neutral, PublicKeyToken=6e602a6ad6c0d06d, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>External\Tao.FreeGlut.dll</HintPath>
-    </Reference>
-    <Reference Include="Tao.OpenGl, Version=2.1.0.12, Culture=neutral, PublicKeyToken=1ca010269a4501ef, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>External\Tao.OpenGl.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Camera.cs" />
@@ -60,9 +60,11 @@
     <Compile Include="Model\ObjModel.cs" />
     <Compile Include="Model\ObjNormal.cs" />
     <Compile Include="Model\ObjObject.cs" />
-    <Compile Include="Model\ObjRGBA.cs" />
+    <Compile Include="Model\ObjRgb.cs" />
     <Compile Include="Model\ObjTexture.cs" />
     <Compile Include="Model\ObjVertex.cs" />
+    <Compile Include="Model\ParseException.cs" />
+    <Compile Include="Scene.cs" />
     <Compile Include="Vertex3.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -71,11 +73,8 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="External\freeglut.dll" />
-    <Content Include="External\glew32.dll" />
-    <Content Include="External\glut32.dll" />
-    <Content Include="External\Tao.FreeGlut.dll" />
-    <Content Include="External\Tao.OpenGl.dll" />
+    <Content Include="External\OpenTK.dll" />
+    <Content Include="External\OpenTK.GLControl.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

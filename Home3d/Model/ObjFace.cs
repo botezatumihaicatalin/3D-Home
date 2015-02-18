@@ -4,18 +4,17 @@ namespace Home3d.Model
 {
     public class ObjFace
     {
-        public ObjFace()
+        public ObjFace() : this(string.Empty)
         {
-            MaterialName = string.Empty;
-            FaceItems = new List<ObjFaceItem>();
         }
+
         public ObjFace(string materialName)
         {
             MaterialName = materialName;
             FaceItems = new List<ObjFaceItem>();
         }
 
-        public string MaterialName { get; set; }
-        public List<ObjFaceItem> FaceItems { get; set; }
+        public string MaterialName { get; private set; }
+        public List<ObjFaceItem> FaceItems { get; private set; }
     }
 }

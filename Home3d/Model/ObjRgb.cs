@@ -1,35 +1,32 @@
 ﻿namespace Home3d.Model
 {
-    public class ObjRgba
+    public class ObjRgb
     {
-        public ObjRgba()
+        public ObjRgb()
         {
             Red = 0;
             Blue = 0;
             Green = 0;
-            Alpha = 1;
         }
 
-        public ObjRgba(double red, double green, double blue, double alpha)
+        public ObjRgb(double red, double green, double blue)
         {
             Red = red;
             Green = green;
             Blue = blue;
-            Alpha = alpha;
         }
         public double Red { get; set; }
         public double Green { get; set; }
         public double Blue { get; set; }
-        public double Alpha { get; set; }
 
         public double[] ToArray()
         {
-            return new [] {Red, Green, Blue, Alpha};
+            return new [] {Red, Green, Blue};
         }
 
         public float[] ToFloatArray()
         {
-            return new[] { (float)Red, (float)Green, (float)Blue, (float)Alpha };
+            return new[] { (float)Red, (float)Green, (float)Blue };
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using Tao.OpenGl;
+﻿using OpenTK;
 
 namespace Home3d
 {
@@ -14,9 +14,10 @@ namespace Home3d
         public Vertex3 LookingPoint { get; set; }
         public Vertex3 Tilt { get; set; }
 
-        public void PositionCamera()
+        public Matrix4 MakeLookingMatrix()
         {
-            Glu.gluLookAt(EyePoint.X, EyePoint.Y, EyePoint.Z, LookingPoint.X, LookingPoint.Y, LookingPoint.Z, Tilt.X, Tilt.Y, Tilt.Z);
+            return Matrix4.LookAt((float)EyePoint.X, (float)EyePoint.Y, (float)EyePoint.Z, (float)LookingPoint.X, (float)LookingPoint.Y, (float)LookingPoint.Z,
+                (float)Tilt.X, (float)Tilt.Y, (float)Tilt.Z);
         }
     }
 }

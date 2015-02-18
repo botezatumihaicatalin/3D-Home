@@ -1,13 +1,11 @@
 ﻿using System;
 using Home3d.Model;
-using Tao.FreeGlut;
-using Tao.OpenGl;
 
 namespace Home3d
 {
     class Program
     {
-        private static readonly ObjModel SofaModel = new ObjModel();
+        /*private static readonly ObjModel SofaModel = new ObjModel();
         private static readonly ObjModel ChairModel = new ObjModel();
         private static readonly ObjModel SonyTvModel = new ObjModel();
         private static readonly ObjModel TvTableModel = new ObjModel();
@@ -220,7 +218,6 @@ namespace Home3d
 
         static void MouseMove(int x, int y)
         {
-
             y = Glut.glutGet(Glut.GLUT_WINDOW_HEIGHT) - y;
 
             if (_lastX != -1 && _lastY != -1)
@@ -338,6 +335,15 @@ namespace Home3d
             Glut.glutPassiveMotionFunc(MouseMove);
             Glut.glutKeyboardFunc(KeyPressed);
             Glut.glutMainLoop();
+        }*/
+
+        static void Main(string[] args)
+        {
+            using (var newScene = new Scene())
+            {
+                newScene.Run(30.0, 0.0);
+            }
         }
+
     }
 }

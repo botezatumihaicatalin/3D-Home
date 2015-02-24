@@ -60,28 +60,28 @@ namespace Home3d.Model
                     if (ParentModel.Materials.ContainsKey(face.MaterialName))
                     {
                         var material = ParentModel.Materials[face.MaterialName];
-                        GL.Material(MaterialFace.Front, MaterialParameter.Ambient, new[]
+                        GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Ambient, new[]
                         {
                             (float)material.AmbientColor.Red, 
                             (float)material.AmbientColor.Green, 
                             (float)material.AmbientColor.Blue, 
                             (float)material.Transparency
                         });
-                        GL.Material(MaterialFace.Front, MaterialParameter.Diffuse, new[]
+                        GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Diffuse, new[]
                         {
                             (float)material.DiffuseColor.Red, 
                             (float)material.DiffuseColor.Green, 
                             (float)material.DiffuseColor.Blue, 
                             (float)material.Transparency
                         });
-                        GL.Material(MaterialFace.Front, MaterialParameter.Specular, new[]
+                        GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Specular, new[]
                         {
                             (float)material.SpecularColor.Red, 
                             (float)material.SpecularColor.Green, 
                             (float)material.SpecularColor.Blue, 
                             (float)material.Transparency
                         });
-                        GL.Material(MaterialFace.Front, MaterialParameter.Shininess, (float)material.Shininess);
+                        GL.Material(MaterialFace.FrontAndBack, MaterialParameter.Shininess, (float)material.Shininess);
                         GL.ActiveTexture(TextureUnit.Texture0);
                         GL.BindTexture(TextureTarget.Texture2D, material.DiffuseTexture.Texture);
                         GL.ActiveTexture(TextureUnit.Texture1);

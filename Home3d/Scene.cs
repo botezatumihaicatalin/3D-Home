@@ -43,6 +43,7 @@ namespace Home3d
             GL.DepthMask(true);
             GL.Enable(EnableCap.Texture2D);
             GL.Enable(EnableCap.Blend);
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Enable(EnableCap.Fog);
             GL.ClearColor(1, 1, 1, 1);
 
@@ -62,7 +63,7 @@ namespace Home3d
 
         private void InitLights()
         {
-            GL.Light(LightName.Light0, LightParameter.Position, new float[] { 1, 9, -20 });
+            GL.Light(LightName.Light0, LightParameter.Position, new float[] { 1, 9, 0 });
             GL.Light(LightName.Light0, LightParameter.Ambient, new float[] { 0, 0, 0 });
             GL.Light(LightName.Light0, LightParameter.Diffuse, new float[] { 1, 1, 1 });
             GL.Light(LightName.Light0, LightParameter.Specular, new float[] { 1, 1, 1 });
@@ -105,13 +106,13 @@ namespace Home3d
             base.OnRenderFrame(e);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.LoadIdentity();
-            
-            InitLights();
-            InitFog();
 
             var lookat = Camera.MakeLookingMatrix();
             GL.LoadMatrix(ref lookat);
             GL.PushMatrix();
+
+            InitLights();
+            InitFog();
 
             var minVertex = new Vertex3(-12.0, 0.0, 0.0);
             var maxVertex = new Vertex3(12.0, 10.0, -23.0);
@@ -214,7 +215,7 @@ namespace Home3d
             GL.PopMatrix();
 
             GL.PushMatrix();
-            GL.Translate(0, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -22);
+            GL.Translate(0, (LampModel.MaximumVertex.Y - LampModel.MinimumVertex.Y) / 2.0, -22.7);
             GL.Translate(0, (SofaModel.MaximumVertex.Y - SofaModel.MinimumVertex.Y), 0);
             GL.Translate(0, 2, 0);
             GL.Rotate(-90, 0, 1, 0);
